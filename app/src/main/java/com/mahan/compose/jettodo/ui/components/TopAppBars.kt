@@ -5,10 +5,15 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.mahan.compose.jettodo.data.models.Priority
 
 @Composable
 fun ListTopAppBar() {
-    DefaultListTopAppBar()
+    DefaultListTopAppBar(
+        onSearchClicked = {},
+        onPriorityItemClicked = {},
+        onDeleteClicked = {}
+    )
 }
 
 @Preview
@@ -18,9 +23,31 @@ fun ListTopAppBarPreview() {
 }
 
 @Composable
-fun DefaultListTopAppBar() {
+fun DefaultListTopAppBar(
+    onSearchClicked: () -> Unit,
+    onPriorityItemClicked: (Priority) -> Unit,
+    onDeleteClicked: () -> Unit
+) {
     TopAppBar(
         title = { Text(text = "Tasks", color = MaterialTheme.colors.onPrimary) },
-        backgroundColor = MaterialTheme.colors.primaryVariant
+        backgroundColor = MaterialTheme.colors.primaryVariant,
+        actions = {
+            DefaultAppBarActions(
+                onSearchClicked = onSearchClicked,
+                onPriorityItemClicked = onPriorityItemClicked,
+                onDeleteClicked = onDeleteClicked
+            )
+        }
     )
+}
+
+@Composable
+fun DefaultAppBarActions(
+    onSearchClicked: () -> Unit,
+    onPriorityItemClicked: (Priority) -> Unit,
+    onDeleteClicked: () -> Unit
+) {
+    SearchAction(onSearchClicked = onSearchClicked)
+    SortAction(onPriorityItemClicked = onPriorityItemClicked)
+    MenuAction(onDeleteClicked = onDeleteClicked)
 }

@@ -2,4 +2,8 @@
     <string name="app_name">Jet Todo</string>
 
     <string name="add_button">Add Fab</string>
+    <string name="search_action">Search Action</string>
+    <string name="filter_action">Filter Action</string>
+    <string name="more_action">More Action</string>
+    <string name="delete_all_action">Delete All</string>
 </resources>

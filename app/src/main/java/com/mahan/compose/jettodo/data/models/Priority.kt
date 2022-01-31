@@ -6,7 +6,7 @@ import com.mahan.compose.jettodo.ui.theme.LowPriorityColor
 import com.mahan.compose.jettodo.ui.theme.MediumPriorityColor
 import com.mahan.compose.jettodo.ui.theme.NonePriorityColor
 
-enum class Priority(private val color: Color) {
+enum class Priority(val color: Color) {
     High(HighPriorityColor),
     Medium(MediumPriorityColor),
     Low(LowPriorityColor),
