@@ -8,17 +8,23 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.mahan.compose.jettodo.navigation.SetupNavigation
 import com.mahan.compose.jettodo.ui.theme.JetTodoTheme
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             TodoApp {
-
+                navController = rememberNavController()
+                SetupNavigation(navController = navController)
             }
         }
     }
@@ -34,11 +40,3 @@ fun TodoApp(content: @Composable() ()-> Unit) {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    TodoApp {
-
-    }
-}
