@@ -8,10 +8,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.mahan.compose.jettodo.ui.screens.ListScreen
 import com.mahan.compose.jettodo.ui.screens.TaskScreen
+import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
 
 @Composable
-fun SetupNavigation(navController: NavHostController) {
+fun SetupNavigation(
+    navController: NavHostController,
+    sharedViewModel: SharedViewModel
+) {
 
     val navigateToListScreen: (Action) -> Unit = {
         navController.navigate(route = Destination.ListScreen.name + "/${it.name}") {
@@ -32,7 +36,10 @@ fun SetupNavigation(navController: NavHostController) {
             route = Destination.ListScreen.name + "/{action}",
             arguments = listOf(navArgument(name = "action") { type = NavType.StringType })
         ) {
-            ListScreen(navigateToTaskScreen = navigateToTaskScreen)
+            ListScreen(
+                navigateToTaskScreen = navigateToTaskScreen,
+                sharedViewModel = sharedViewModel
+            )
         }
 
         // TaskScreen
