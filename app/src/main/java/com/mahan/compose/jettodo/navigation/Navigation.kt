@@ -61,7 +61,7 @@ fun SetupNavigation(
             // Act as an state for Task Screen
             val selectedTask by sharedViewModel.selectedTask.collectAsState()
 
-            LaunchedEffect(key1 = taskId) {
+            LaunchedEffect(key1 = selectedTask) {
                 sharedViewModel.updateTaskContentFields(selectedTask = selectedTask)
             }
 

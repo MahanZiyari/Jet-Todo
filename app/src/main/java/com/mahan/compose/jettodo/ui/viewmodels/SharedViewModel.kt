@@ -50,6 +50,8 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
         priority.value = newValue
     }
 
+    fun validateFields(): Boolean = title.value.isNotEmpty() && description.value.isNotEmpty()
+
 
     fun getAllTasks() {
         _tasks.value = RequestState.Loading
