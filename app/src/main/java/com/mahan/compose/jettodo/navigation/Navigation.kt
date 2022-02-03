@@ -1,5 +1,6 @@
 package com.mahan.compose.jettodo.navigation
 
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -11,6 +12,7 @@ import com.mahan.compose.jettodo.ui.screens.TaskScreen
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
 
+@ExperimentalMaterialApi
 @Composable
 fun SetupNavigation(
     navController: NavHostController,

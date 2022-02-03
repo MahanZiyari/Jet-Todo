@@ -60,9 +60,10 @@ fun FilterDropDownMenu(
 @Composable
 fun PriorityItem(priority: Priority) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Canvas(modifier = Modifier.size(PRIORITY_INDICATOR_SIZE)) {
-            drawCircle(color = priority.color)
-        }
+        PriorityIndicator(
+            circleSize = PRIORITY_INDICATOR_SIZE,
+            priority = priority
+        )
         Text(
             modifier = Modifier.padding(start = LARGE_PADDING),
             text = priority.name,

@@ -1,6 +1,7 @@
 package com.mahan.compose.jettodo.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.Colors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -18,9 +19,13 @@ val LightGray = Color(0xFFFCFCFC)
 val MediumGray = Color(0xFF9C9C9C)
 val DarkGray = Color(0xFF141414)
 
-val topAppBarContentColor: Color
-@Composable
-get() = if (isSystemInDarkTheme()) LightGray else Color.White
+val Colors.taskItemTextColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) LightGray else DarkGray
+
+val Colors.taskItemBackGroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) DarkGray else Color.White
 
 val topAppBarBackgroundColor: Color
 @Composable
