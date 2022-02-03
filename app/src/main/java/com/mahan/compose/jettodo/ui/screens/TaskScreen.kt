@@ -41,15 +41,15 @@ fun TaskScreen(
         Content(
             title = title,
             onTitleChange = {
-                sharedViewModel.title.value = it
+                sharedViewModel.updateTitle(it)
             },
             description = description,
             onDescriptionChange = {
-                sharedViewModel.description.value = it
+                sharedViewModel.updateDescription(it)
             },
             priority = priority,
             onPrioritySelected = {
-                sharedViewModel.priority.value = it
+                sharedViewModel.updatePriority(it)
             }
         )
     }

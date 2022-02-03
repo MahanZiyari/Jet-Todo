@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.mahan.compose.jettodo.data.TodoRepository
 import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.data.models.TodoTask
+import com.mahan.compose.jettodo.util.Constants
 import com.mahan.compose.jettodo.util.RequestState
 import com.mahan.compose.jettodo.util.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,6 +36,19 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
     val title = mutableStateOf("")
     val description = mutableStateOf("")
     val priority = mutableStateOf(Priority.Low)
+
+    fun updateTitle(newTitle: String) {
+        if (newTitle.length < Constants.MAX_TITLE_CHARACTER_COUNT)
+            title.value = newTitle
+    }
+
+    fun updateDescription(newValue: String) {
+        description.value = newValue
+    }
+
+    fun updatePriority(newValue: Priority) {
+        priority.value = newValue
+    }
 
 
     fun getAllTasks() {
