@@ -2,6 +2,8 @@ package com.mahan.compose.jettodo.navigation
 
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -38,7 +40,9 @@ fun SetupNavigation(
             route = Destination.ListScreen.name + "/{action}",
             arguments = listOf(navArgument(name = "action") { type = NavType.StringType })
         ) {
+            val action = it.arguments?.getString("action")
             ListScreen(
+                action = action,
                 navigateToTaskScreen = navigateToTaskScreen,
                 sharedViewModel = sharedViewModel
             )
@@ -49,7 +53,16 @@ fun SetupNavigation(
             route = Destination.TaskScreen.name + "/{taskId}",
             arguments = listOf(navArgument(name = "taskId") { type = NavType.IntType })
         ) {
-            TaskScreen(taskId = it.arguments?.getInt("taskId"))
+            val taskId = it.arguments!!.getInt("taskId")
+            sharedViewModel.getSelectedTask(taskId = taskId)
+
+            // Act as an state for Task Screen
+            val selectedTask by sharedViewModel.selectedTask.collectAsState()
+
+            TaskScreen(
+                selectedTask = selectedTask,
+                navigateToListScreen = navigateToListScreen
+            )
         }
     }
 }

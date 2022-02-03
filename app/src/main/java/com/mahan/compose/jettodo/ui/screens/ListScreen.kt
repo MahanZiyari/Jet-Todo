@@ -1,5 +1,6 @@
 package com.mahan.compose.jettodo.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,11 +29,13 @@ import com.mahan.compose.jettodo.util.RequestState
 @ExperimentalMaterialApi
 @Composable
 fun ListScreen(
+    action: String?,
     navigateToTaskScreen: (Int) -> Unit,
     sharedViewModel: SharedViewModel
 ) {
     LaunchedEffect(key1 = true) {
         sharedViewModel.getAllTasks()
+        Log.d("Action", "ListScreen: $action")
     }
 
 
