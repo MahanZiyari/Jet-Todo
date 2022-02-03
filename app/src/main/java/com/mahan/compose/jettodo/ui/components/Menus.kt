@@ -58,7 +58,10 @@ fun FilterDropDownMenu(
 
 
 @Composable
-fun PriorityItem(priority: Priority) {
+fun PriorityItem(
+    modifier: Modifier = Modifier,
+    priority: Priority
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         PriorityIndicator(
             circleSize = PRIORITY_INDICATOR_SIZE,

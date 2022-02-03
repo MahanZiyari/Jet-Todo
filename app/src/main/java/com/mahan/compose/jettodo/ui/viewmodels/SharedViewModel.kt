@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mahan.compose.jettodo.data.TodoRepository
+import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.data.models.TodoTask
 import com.mahan.compose.jettodo.util.RequestState
 import com.mahan.compose.jettodo.util.SearchAppBarState
@@ -29,6 +30,12 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
     private val _selectedTask: MutableStateFlow<TodoTask?> = MutableStateFlow(null)
     val selectedTask = _selectedTask.asStateFlow()
 
+    // TaskScreen States
+    val id = mutableStateOf(0)
+    val title = mutableStateOf("")
+    val description = mutableStateOf("")
+    val priority = mutableStateOf(Priority.Low)
+
 
     fun getAllTasks() {
         _tasks.value = RequestState.Loading
@@ -44,6 +51,20 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
             repository.getSelectedTask(taskId = taskId).collect {
                 _selectedTask.value = it
             }
+        }
+    }
+
+    fun updateTaskContentFields(selectedTask: TodoTask?) {
+        if (selectedTask != null) {
+            id.value = selectedTask.id
+            title.value = selectedTask.title
+            description.value = selectedTask.description
+            priority.value = selectedTask.priority
+        } else {
+            id.value = 0
+            title.value = ""
+            description.value = ""
+            priority.value = Priority.Low
         }
     }
 }
