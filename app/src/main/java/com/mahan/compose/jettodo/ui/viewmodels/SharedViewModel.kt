@@ -7,10 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.mahan.compose.jettodo.data.TodoRepository
 import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.data.models.TodoTask
+import com.mahan.compose.jettodo.util.Action
 import com.mahan.compose.jettodo.util.Constants
 import com.mahan.compose.jettodo.util.RequestState
 import com.mahan.compose.jettodo.util.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,6 +39,8 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
     val description = mutableStateOf("")
     val priority = mutableStateOf(Priority.Low)
 
+    val action = mutableStateOf(Action.NO_ACTION)
+
     fun updateTitle(newTitle: String) {
         if (newTitle.length < Constants.MAX_TITLE_CHARACTER_COUNT)
             title.value = newTitle
@@ -48,6 +52,10 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
 
     fun updatePriority(newValue: Priority) {
         priority.value = newValue
+    }
+
+    fun updateAction(newValue: Action) {
+        action.value = newValue
     }
 
     fun validateFields(): Boolean = title.value.isNotEmpty() && description.value.isNotEmpty()
@@ -67,6 +75,28 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
             repository.getSelectedTask(taskId = taskId).collect {
                 _selectedTask.value = it
             }
+        }
+    }
+
+    private fun addTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val todoTask = TodoTask(
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repository.insert(todoTask)
+        }
+    }
+
+    fun handleDatabaseActions(action: Action) {
+        when (action) {
+            Action.ADD -> addTask()
+            Action.UPDATE -> {}
+            Action.DELETE -> {}
+            Action.DELETE_ALL -> {}
+            Action.UNDO -> {}
+            else -> {}
         }
     }
 

@@ -15,6 +15,7 @@ import com.mahan.compose.jettodo.ui.screens.ListScreen
 import com.mahan.compose.jettodo.ui.screens.TaskScreen
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
+import com.mahan.compose.jettodo.util.getAction
 
 @ExperimentalMaterialApi
 @Composable
@@ -42,9 +43,11 @@ fun SetupNavigation(
             route = Destination.ListScreen.name + "/{action}",
             arguments = listOf(navArgument(name = "action") { type = NavType.StringType })
         ) {
-            val action = it.arguments?.getString("action")
+            val action = it.arguments?.getString("action").getAction()
+            LaunchedEffect(key1 = action) {
+                sharedViewModel.updateAction(action)
+            }
             ListScreen(
-                action = action,
                 navigateToTaskScreen = navigateToTaskScreen,
                 sharedViewModel = sharedViewModel
             )
