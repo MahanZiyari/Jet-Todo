@@ -1,6 +1,11 @@
 package com.mahan.compose.jettodo.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,8 +32,10 @@ import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
 import com.mahan.compose.jettodo.util.RequestState
 import com.mahan.compose.jettodo.util.SearchAppBarState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun ListScreen(
@@ -99,6 +106,7 @@ fun ListScreen(
     }
 }
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun HandleListContent(
@@ -151,6 +159,7 @@ fun HandleListContent(
 
 }
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun ListContent(
@@ -175,18 +184,43 @@ fun ListContent(
             )
 
             if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
-                onSwipeToDelete(Action.DELETE, it)
+                val scope = rememberCoroutineScope()
+                scope.launch {
+                    delay(300)
+                    onSwipeToDelete(Action.DELETE, it)
+                }
             }
 
-            SwipeToDismiss(
-                state = dismissState,
-                directions = setOf(DismissDirection.EndToStart),
-                dismissThresholds = { FractionalThreshold(0.2f) },
-                background = {RedBackground(degree = degree)},
-                dismissContent = {
-                    TaskItem(todoTask = it, navigateToTaskScreen = navigateToTaskScreen)
-                }
-            )
+            var itemAppeared by remember {
+                mutableStateOf(false)
+            }
+            LaunchedEffect(key1 = true) {
+                itemAppeared = true
+            }
+
+            AnimatedVisibility(
+                visible = itemAppeared && !isDismissed,
+                enter = expandVertically(
+                    animationSpec = tween(
+                        durationMillis = 300
+                    )
+                ),
+                exit = shrinkVertically(
+                    animationSpec = tween(
+                        durationMillis = 300
+                    )
+                )
+            ) {
+                SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(DismissDirection.EndToStart),
+                    dismissThresholds = { FractionalThreshold(0.2f) },
+                    background = {RedBackground(degree = degree)},
+                    dismissContent = {
+                        TaskItem(todoTask = it, navigateToTaskScreen = navigateToTaskScreen)
+                    }
+                )
+            }
         }
     }
 }

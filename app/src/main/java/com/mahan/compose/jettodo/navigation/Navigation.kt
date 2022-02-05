@@ -1,6 +1,7 @@
 package com.mahan.compose.jettodo.navigation
 
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +18,7 @@ import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
 import com.mahan.compose.jettodo.util.toPriority
 
+@ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable
 fun SetupNavigation(
