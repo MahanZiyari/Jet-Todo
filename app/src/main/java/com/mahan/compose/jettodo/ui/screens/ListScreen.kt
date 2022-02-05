@@ -1,6 +1,6 @@
 package com.mahan.compose.jettodo.ui.screens
 
-import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +20,7 @@ import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.data.models.TodoTask
 import com.mahan.compose.jettodo.ui.components.ListFab
 import com.mahan.compose.jettodo.ui.components.ListTopAppBar
+import com.mahan.compose.jettodo.ui.components.RedBackground
 import com.mahan.compose.jettodo.ui.components.TaskItem
 import com.mahan.compose.jettodo.ui.theme.MediumGray
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
@@ -87,9 +88,13 @@ fun ListScreen(
             searchedTasks = searchedTasks,
             sortState = sortState,
             tasksSortedByLowPriority = tasksSortByLowPriority,
-            tasksSortedByHighPriority =  tasksSortByHighPriority,
+            tasksSortedByHighPriority = tasksSortByHighPriority,
             navigateToTaskScreen = navigateToTaskScreen,
-            searchAppBarState = searchAppBarState
+            searchAppBarState = searchAppBarState,
+            onSwipeToDelete = { action, task ->
+                sharedViewModel.handleDatabaseActions(action)
+                sharedViewModel.updateTaskContentFields(task)
+            }
         )
     }
 }
@@ -103,32 +108,43 @@ fun HandleListContent(
     tasksSortedByLowPriority: List<TodoTask>,
     tasksSortedByHighPriority: List<TodoTask>,
     navigateToTaskScreen: (Int) -> Unit,
+    onSwipeToDelete: (Action, TodoTask) -> Unit,
     searchAppBarState: SearchAppBarState
 ) {
     if (sortState !is RequestState.Success) return
     when {
         searchAppBarState == SearchAppBarState.TRIGGERED -> {
             if (searchedTasks is RequestState.Success) {
-                ListContent(tasks = searchedTasks.data, navigateToTaskScreen = navigateToTaskScreen)
+                ListContent(
+                    tasks = searchedTasks.data,
+                    navigateToTaskScreen = navigateToTaskScreen,
+                    onSwipeToDelete = onSwipeToDelete
+                )
             }
         }
         sortState.data == Priority.None -> {
             if (allTasks is RequestState.Success) {
                 if (allTasks.data.isEmpty())
                     EmptyContent()
-                ListContent(tasks = allTasks.data, navigateToTaskScreen = navigateToTaskScreen)
+                ListContent(
+                    tasks = allTasks.data,
+                    navigateToTaskScreen = navigateToTaskScreen,
+                    onSwipeToDelete = onSwipeToDelete
+                )
             }
         }
         sortState.data == Priority.Low -> {
             ListContent(
                 tasks = tasksSortedByLowPriority,
-                navigateToTaskScreen = navigateToTaskScreen
+                navigateToTaskScreen = navigateToTaskScreen,
+                onSwipeToDelete = onSwipeToDelete
             )
         }
         sortState.data == Priority.High -> {
             ListContent(
                 tasks = tasksSortedByHighPriority,
-                navigateToTaskScreen = navigateToTaskScreen
+                navigateToTaskScreen = navigateToTaskScreen,
+                onSwipeToDelete = onSwipeToDelete
             )
         }
     }
@@ -139,14 +155,38 @@ fun HandleListContent(
 @Composable
 fun ListContent(
     tasks: List<TodoTask>,
-    navigateToTaskScreen: (Int) -> Unit
+    navigateToTaskScreen: (Int) -> Unit,
+    onSwipeToDelete: (Action, TodoTask) -> Unit
 ) {
     LazyColumn {
         items(
             items = tasks,
             key = { it.id }
         ) {
-            TaskItem(todoTask = it, navigateToTaskScreen = navigateToTaskScreen)
+            val dismissState = rememberDismissState()
+            val degree by animateFloatAsState(
+                targetValue = if (dismissState.targetValue == DismissValue.Default) 0f else -45f
+            )
+            val dismissDirection = dismissState.dismissDirection
+            // Whether the component has been dismissed in the given direction.
+            //Params: direction - The dismiss direction.
+            val isDismissed = dismissState.isDismissed(
+                DismissDirection.EndToStart
+            )
+
+            if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
+                onSwipeToDelete(Action.DELETE, it)
+            }
+
+            SwipeToDismiss(
+                state = dismissState,
+                directions = setOf(DismissDirection.EndToStart),
+                dismissThresholds = { FractionalThreshold(0.2f) },
+                background = {RedBackground(degree = degree)},
+                dismissContent = {
+                    TaskItem(todoTask = it, navigateToTaskScreen = navigateToTaskScreen)
+                }
+            )
         }
     }
 }
@@ -180,9 +220,9 @@ fun DisplaySnackBar(
     action: Action,
     onUndoClicked: (Action) -> Unit
 ) {
-    
-    val scope  = rememberCoroutineScope()
-    
+
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(key1 = action) {
         if (action != Action.NO_ACTION)
             scope.launch {
@@ -204,7 +244,7 @@ private fun undoDeletedTask(
     action: Action,
     onUndoClicked: (Action) -> Unit
 ) {
-    if (snackBarResult == SnackbarResult.ActionPerformed && action == Action.DELETE){
+    if (snackBarResult == SnackbarResult.ActionPerformed && action == Action.DELETE) {
         onUndoClicked(Action.UNDO)
     }
 }

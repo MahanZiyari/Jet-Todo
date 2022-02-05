@@ -1,18 +1,21 @@
 package com.mahan.compose.jettodo.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.data.models.TodoTask
 import com.mahan.compose.jettodo.ui.theme.*
@@ -79,4 +82,28 @@ fun TaskItemPreviewNight() {
 @Composable
 fun TaskItemPreview() {
     TaskItem(todoTask = TodoTask(priority = Priority.Medium), navigateToTaskScreen = {})
+}
+
+@Composable
+fun RedBackground(degree: Float) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(HighPriorityColor)
+            .padding(horizontal = 24.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Icon(
+            modifier = Modifier.rotate(degree),
+            tint = Color.White,
+            imageVector = Icons.Rounded.Delete,
+            contentDescription = "Delete Task"
+        )
+    }
+}
+
+@Preview
+@Composable
+fun RedBackgroundPreview() {
+    RedBackground(degree = 0f)
 }
