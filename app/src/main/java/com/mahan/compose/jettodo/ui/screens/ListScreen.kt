@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mahan.compose.jettodo.R
+import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.data.models.TodoTask
 import com.mahan.compose.jettodo.ui.components.ListFab
 import com.mahan.compose.jettodo.ui.components.ListTopAppBar
@@ -36,6 +37,7 @@ fun ListScreen(
 ) {
     LaunchedEffect(key1 = true) {
         sharedViewModel.getAllTasks()
+        sharedViewModel.readSortState()
     }
 
 
@@ -47,6 +49,10 @@ fun ListScreen(
     val searchText: String by sharedViewModel.searchAppBarText
 
     val action by sharedViewModel.action
+
+    val sortState by sharedViewModel.sortState.collectAsState()
+    val tasksSortByLowPriority by sharedViewModel.lowPriorityTasks.collectAsState()
+    val tasksSortByHighPriority by sharedViewModel.highPriorityTasks.collectAsState()
 
     val scaffoldState = rememberScaffoldState()
 
@@ -79,6 +85,9 @@ fun ListScreen(
         HandleListContent(
             allTasks = tasks,
             searchedTasks = searchedTasks,
+            sortState = sortState,
+            tasksSortedByLowPriority = tasksSortByLowPriority,
+            tasksSortedByHighPriority =  tasksSortByHighPriority,
             navigateToTaskScreen = navigateToTaskScreen,
             searchAppBarState = searchAppBarState
         )
@@ -90,20 +99,40 @@ fun ListScreen(
 fun HandleListContent(
     allTasks: RequestState<List<TodoTask>>,
     searchedTasks: RequestState<List<TodoTask>>,
+    sortState: RequestState<Priority>,
+    tasksSortedByLowPriority: List<TodoTask>,
+    tasksSortedByHighPriority: List<TodoTask>,
     navigateToTaskScreen: (Int) -> Unit,
     searchAppBarState: SearchAppBarState
 ) {
-    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
-        if (searchedTasks is RequestState.Success) {
-            ListContent(tasks = searchedTasks.data, navigateToTaskScreen = navigateToTaskScreen)
+    if (sortState !is RequestState.Success) return
+    when {
+        searchAppBarState == SearchAppBarState.TRIGGERED -> {
+            if (searchedTasks is RequestState.Success) {
+                ListContent(tasks = searchedTasks.data, navigateToTaskScreen = navigateToTaskScreen)
+            }
         }
-    } else {
-        if (allTasks is RequestState.Success) {
-            if (allTasks.data.isEmpty())
-                EmptyContent()
-            ListContent(tasks = allTasks.data, navigateToTaskScreen = navigateToTaskScreen)
+        sortState.data == Priority.None -> {
+            if (allTasks is RequestState.Success) {
+                if (allTasks.data.isEmpty())
+                    EmptyContent()
+                ListContent(tasks = allTasks.data, navigateToTaskScreen = navigateToTaskScreen)
+            }
+        }
+        sortState.data == Priority.Low -> {
+            ListContent(
+                tasks = tasksSortedByLowPriority,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
+        }
+        sortState.data == Priority.High -> {
+            ListContent(
+                tasks = tasksSortedByHighPriority,
+                navigateToTaskScreen = navigateToTaskScreen
+            )
         }
     }
+
 }
 
 @ExperimentalMaterialApi

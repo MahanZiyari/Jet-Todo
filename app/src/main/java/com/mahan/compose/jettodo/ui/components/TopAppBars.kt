@@ -1,7 +1,6 @@
 package com.mahan.compose.jettodo.ui.components
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
@@ -14,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,7 +52,9 @@ fun ListTopAppBar(
                 onSearchClicked = {
                     sharedViewModel.searchAppBarState.value = SearchAppBarState.OPENED
                 },
-                onPriorityItemClicked = {},
+                onPriorityItemClicked = {
+                    sharedViewModel.persistSortState(it)
+                },
                 onDeleteClicked = {
                     openDialog = true
                 }
