@@ -43,6 +43,7 @@ fun ListTopAppBar(
                 text = searchAppBarText,
                 onTextChange = {
                     sharedViewModel.searchAppBarText.value = it
+                    sharedViewModel.searchDatabase()
                 },
                 onCloseClicked = {
                     if (searchAppBarText.isNotEmpty())
@@ -50,7 +51,9 @@ fun ListTopAppBar(
                     else
                         sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
                 },
-                onSearchClicked = {}
+                onSearchClicked = {
+                    // sharedViewModel.searchDatabase(it)
+                }
             )
         }
     }
@@ -106,7 +109,10 @@ fun SearchTopAppBar(
             modifier = Modifier
                 .fillMaxWidth(),
             value = text,
-            onValueChange = { onTextChange(it) },
+            onValueChange = {
+                onTextChange(it)
+                // onSearchClicked(it)
+            },
             singleLine = true,
             placeholder = {
                 Text(
@@ -151,7 +157,8 @@ fun SearchTopAppBar(
                 imeAction = ImeAction.Search
             ),
             keyboardActions = KeyboardActions(
-                onSearch = { onSearchClicked(text) }
+                onAny = { onSearchClicked(text) }
+                //onSearch = { onSearchClicked(text) }
             )
         )
     }

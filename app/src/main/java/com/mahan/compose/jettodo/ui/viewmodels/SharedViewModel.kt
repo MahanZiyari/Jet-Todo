@@ -4,7 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mahan.compose.jettodo.data.TodoRepository
 import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.data.models.TodoTask
@@ -24,10 +23,16 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedViewModel @Inject constructor(private val repository: TodoRepository) : ViewModel() {
 
+    // All Tasks
     private val _tasks = MutableStateFlow<RequestState<List<TodoTask>>>(RequestState.Idle)
     val tasks: StateFlow<RequestState<List<TodoTask>>> = _tasks.asStateFlow()
 
-    val searchAppBarState: MutableState<SearchAppBarState> = mutableStateOf(SearchAppBarState.CLOSED)
+    // Tasks based on user Search
+    private val _searchedTasks = MutableStateFlow<RequestState<List<TodoTask>>>(RequestState.Idle)
+    val searchedTasks: StateFlow<RequestState<List<TodoTask>>> = _searchedTasks.asStateFlow()
+
+    val searchAppBarState: MutableState<SearchAppBarState> =
+        mutableStateOf(SearchAppBarState.CLOSED)
     val searchAppBarText: MutableState<String> = mutableStateOf("")
 
     // Selected Task
@@ -72,6 +77,20 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
         }
     }
 
+    fun searchDatabase() {
+        _searchedTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                repository.searchDatabase(searchQuery = "%${searchAppBarText.value}%").collect {
+                    _searchedTasks.value = RequestState.Success(it)
+                }
+            }
+        } catch (e: Exception) {
+            _searchedTasks.value = RequestState.Error(e)
+        }
+        searchAppBarState.value = SearchAppBarState.TRIGGERED
+    }
+
     fun getSelectedTask(taskId: Int) {
         viewModelScope.launch {
             repository.getSelectedTask(taskId = taskId).collect {
@@ -89,6 +108,7 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
             )
             repository.insert(todoTask)
         }
+        searchAppBarState.value = SearchAppBarState.CLOSED
     }
 
     private fun updateTask() {
@@ -101,6 +121,7 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
             )
             repository.update(todoTask)
         }
+        searchAppBarState.value = SearchAppBarState.CLOSED
     }
 
     private fun removeTask() {

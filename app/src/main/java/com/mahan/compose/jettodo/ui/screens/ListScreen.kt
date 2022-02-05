@@ -23,6 +23,7 @@ import com.mahan.compose.jettodo.ui.theme.MediumGray
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
 import com.mahan.compose.jettodo.util.RequestState
+import com.mahan.compose.jettodo.util.SearchAppBarState
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
@@ -38,6 +39,8 @@ fun ListScreen(
 
 
     val tasks by sharedViewModel.tasks.collectAsState()
+    val searchedTasks by sharedViewModel.searchedTasks.collectAsState()
+
     val searchAppBarState by sharedViewModel.searchAppBarState
 
     val searchText: String by sharedViewModel.searchAppBarText
@@ -69,14 +72,30 @@ fun ListScreen(
             ListFab(onFabClicked = navigateToTaskScreen)
         }
     ) {
-        if (tasks is RequestState.Success) {
-            if ((tasks as RequestState.Success<List<TodoTask>>).data.isEmpty())
-                EmptyContent()
-            else
-                ListContent(
-                    tasks = (tasks as RequestState.Success<List<TodoTask>>).data,
-                    navigateToTaskScreen = navigateToTaskScreen
-                )
+        HandleListContent(
+            allTasks = tasks,
+            searchedTasks = searchedTasks,
+            navigateToTaskScreen = navigateToTaskScreen,
+            searchAppBarState = searchAppBarState
+        )
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun HandleListContent(
+    allTasks: RequestState<List<TodoTask>>,
+    searchedTasks: RequestState<List<TodoTask>>,
+    navigateToTaskScreen: (Int) -> Unit,
+    searchAppBarState: SearchAppBarState
+) {
+    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
+        if (searchedTasks is RequestState.Success) {
+            ListContent(tasks = searchedTasks.data, navigateToTaskScreen = navigateToTaskScreen)
+        }
+    } else {
+        if (allTasks is RequestState.Success) {
+            ListContent(tasks = allTasks.data, navigateToTaskScreen = navigateToTaskScreen)
         }
     }
 }
