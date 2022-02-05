@@ -24,9 +24,14 @@ fun SetupNavigation(
     sharedViewModel: SharedViewModel
 ) {
 
+    val backToListScreen: (Action) -> Unit = {
+        navController.popBackStack(route = Destination.ListScreen.name + "/{action}", inclusive = false)
+        // navController.popBackStack()
+    }
+
     val navigateToListScreen: (Action) -> Unit = {
         navController.navigate(route = Destination.ListScreen.name + "/${it.name}") {
-            popUpTo(Destination.ListScreen.name + "/${it.name}") {inclusive = true}
+            popUpTo(route = Destination.ListScreen.name + "/${it.name}") {inclusive = true}
         }
     }
 
@@ -44,10 +49,11 @@ fun SetupNavigation(
             arguments = listOf(navArgument(name = "action") { type = NavType.StringType })
         ) {
             val action = it.arguments?.getString("action").getAction()
-            LaunchedEffect(key1 = action) {
+            /*LaunchedEffect(key1 = action) {
                 sharedViewModel.updateAction(action)
-            }
+            }*/
             ListScreen(
+                // action = action,
                 navigateToTaskScreen = navigateToTaskScreen,
                 sharedViewModel = sharedViewModel
             )
@@ -70,7 +76,7 @@ fun SetupNavigation(
 
             TaskScreen(
                 selectedTask = selectedTask,
-                navigateToListScreen = navigateToListScreen,
+                navigateToListScreen = backToListScreen,
                 sharedViewModel = sharedViewModel
             )
         }

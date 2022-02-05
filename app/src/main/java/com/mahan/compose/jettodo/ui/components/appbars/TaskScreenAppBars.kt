@@ -15,22 +15,36 @@ import com.mahan.compose.jettodo.util.Action
 @Composable
 fun TaskScreenAppBar(
     selectedTask: TodoTask?,
-    navigateToListScreen: (Action) -> Unit
+    navigateToListScreen: (Action) -> Unit,
+    handleDatabaseAction: (Action) -> Unit
 ) {
     if (selectedTask == null)
-        NewTaskAppBar(navigateToListScreen = navigateToListScreen)
+        NewTaskAppBar(
+            navigateToListScreen = navigateToListScreen,
+            handleDatabaseAction = handleDatabaseAction
+        )
     else
-        ExistTaskAppBar(selectedTask = selectedTask, navigateToListScreen = navigateToListScreen)
+        ExistTaskAppBar(
+            selectedTask = selectedTask,
+            navigateToListScreen = navigateToListScreen,
+            handleDatabaseAction = handleDatabaseAction
+        )
 }
 
 @Composable
 fun NewTaskAppBar(
-    navigateToListScreen: (Action) -> Unit
+    navigateToListScreen: (Action) -> Unit,
+    handleDatabaseAction: (Action) -> Unit
 ) {
     TopAppBar(
         backgroundColor = MaterialTheme.colors.primaryVariant,
         navigationIcon = {
-            IconButton(onClick = { navigateToListScreen(Action.NO_ACTION) }) {
+            IconButton(
+                onClick = {
+                    handleDatabaseAction(Action.NO_ACTION)
+                    navigateToListScreen(Action.NO_ACTION)
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Rounded.ArrowBack,
                     contentDescription = "Back Button",
@@ -45,7 +59,12 @@ fun NewTaskAppBar(
             )
         },
         actions = {
-            IconButton(onClick = { navigateToListScreen(Action.ADD) }) {
+            IconButton(
+                onClick = {
+                    handleDatabaseAction(Action.ADD)
+                    navigateToListScreen(Action.ADD)
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
                     contentDescription = "Add Task",
@@ -59,18 +78,24 @@ fun NewTaskAppBar(
 @Preview
 @Composable
 fun NewTaskAppBarPreview() {
-    NewTaskAppBar(navigateToListScreen = {})
+    NewTaskAppBar(navigateToListScreen = {}, handleDatabaseAction = {})
 }
 
 @Composable
 fun ExistTaskAppBar(
     selectedTask: TodoTask,
-    navigateToListScreen: (Action) -> Unit
+    navigateToListScreen: (Action) -> Unit,
+    handleDatabaseAction: (Action) -> Unit
 ) {
     TopAppBar(
         backgroundColor = MaterialTheme.colors.primaryVariant,
         navigationIcon = {
-            IconButton(onClick = { navigateToListScreen(Action.NO_ACTION) }) {
+            IconButton(
+                onClick = {
+                    handleDatabaseAction(Action.NO_ACTION)
+                    navigateToListScreen(Action.NO_ACTION)
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Rounded.Close,
                     contentDescription = "Back Button",
@@ -87,7 +112,12 @@ fun ExistTaskAppBar(
             )
         },
         actions = {
-            IconButton(onClick = { navigateToListScreen(Action.DELETE) }) {
+            IconButton(
+                onClick = {
+                    handleDatabaseAction(Action.DELETE)
+                    navigateToListScreen(Action.DELETE)
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Rounded.Delete,
                     contentDescription = "Add Task",
@@ -95,7 +125,12 @@ fun ExistTaskAppBar(
                 )
             }
 
-            IconButton(onClick = { navigateToListScreen(Action.UPDATE) }) {
+            IconButton(
+                onClick = {
+                    handleDatabaseAction(Action.UPDATE)
+                    navigateToListScreen(Action.UPDATE)
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
                     contentDescription = "Add Task",
@@ -110,5 +145,9 @@ fun ExistTaskAppBar(
 @Preview
 @Composable
 fun ExistTaskAppBarPreview() {
-    ExistTaskAppBar(selectedTask = TodoTask(), navigateToListScreen = {})
+    ExistTaskAppBar(
+        selectedTask = TodoTask(),
+        navigateToListScreen = {},
+        handleDatabaseAction = {}
+    )
 }

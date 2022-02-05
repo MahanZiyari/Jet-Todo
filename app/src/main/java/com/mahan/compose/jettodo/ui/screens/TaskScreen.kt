@@ -49,6 +49,9 @@ fun TaskScreen(
                                 displayToast(context, "Fields Empty.")
                         }
                     }
+                },
+                handleDatabaseAction = {
+                    sharedViewModel.handleDatabaseActions(it)
                 }
             )
         },

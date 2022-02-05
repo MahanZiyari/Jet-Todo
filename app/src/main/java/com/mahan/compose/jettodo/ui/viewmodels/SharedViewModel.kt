@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mahan.compose.jettodo.data.TodoRepository
 import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.data.models.TodoTask
@@ -55,6 +56,7 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
     }
 
     fun updateAction(newValue: Action) {
+        if (action.value.name == newValue.name) return
         action.value = newValue
     }
 
@@ -89,11 +91,36 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
         }
     }
 
+    private fun updateTask() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val todoTask = TodoTask(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repository.update(todoTask)
+        }
+    }
+
+    private fun removeTask() {
+        viewModelScope.launch {
+            val todoTask = TodoTask(
+                id = id.value,
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            repository.delete(todoTask)
+        }
+    }
+
     fun handleDatabaseActions(action: Action) {
+        updateAction(action)
         when (action) {
             Action.ADD -> addTask()
-            Action.UPDATE -> {}
-            Action.DELETE -> {}
+            Action.UPDATE -> updateTask()
+            Action.DELETE -> removeTask()
             Action.DELETE_ALL -> {}
             Action.UNDO -> {}
             else -> {}

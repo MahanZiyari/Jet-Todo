@@ -14,10 +14,10 @@ interface TodoDao {
     @Query("Select * from todo_table Where id=:taskId")
     fun getSelectedTask(taskId: Int): Flow<TodoTask>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(todoTask: TodoTask)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.ABORT)
     suspend fun update(todoTask: TodoTask)
 
     @Delete

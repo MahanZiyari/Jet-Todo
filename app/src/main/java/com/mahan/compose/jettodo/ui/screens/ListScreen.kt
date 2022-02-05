@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun ListScreen(
+    //action: Action,
     navigateToTaskScreen: (Int) -> Unit,
     sharedViewModel: SharedViewModel
 ) {
@@ -47,7 +48,6 @@ fun ListScreen(
 
     DisplaySnackBar(
         scaffoldState = scaffoldState,
-        handleDatabaseAction = { sharedViewModel.handleDatabaseActions(action) },
         tittle = sharedViewModel.title.value,
         action = action
     )
@@ -119,11 +119,9 @@ fun EmptyContent() {
 @Composable
 fun DisplaySnackBar(
     scaffoldState: ScaffoldState,
-    handleDatabaseAction: () -> Unit,
     tittle: String,
     action: Action
 ) {
-    handleDatabaseAction()
     
     val scope  = rememberCoroutineScope()
     
