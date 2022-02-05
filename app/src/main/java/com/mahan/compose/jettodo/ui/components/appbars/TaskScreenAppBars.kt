@@ -6,10 +6,14 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.room.Delete
+import com.mahan.compose.jettodo.R
 import com.mahan.compose.jettodo.data.models.TodoTask
+import com.mahan.compose.jettodo.ui.components.DisplayAlertDialog
 import com.mahan.compose.jettodo.util.Action
 
 @Composable
@@ -112,33 +116,82 @@ fun ExistTaskAppBar(
             )
         },
         actions = {
-            IconButton(
-                onClick = {
-                    handleDatabaseAction(Action.DELETE)
-                    navigateToListScreen(Action.DELETE)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Delete,
-                    contentDescription = "Add Task",
-                    tint = MaterialTheme.colors.onPrimary
-                )
-            }
-
-            IconButton(
-                onClick = {
-                    handleDatabaseAction(Action.UPDATE)
-                    navigateToListScreen(Action.UPDATE)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Check,
-                    contentDescription = "Add Task",
-                    tint = MaterialTheme.colors.onPrimary
-                )
-            }
-
+            ExistTaskAppBarActions(
+                selectedTask = selectedTask,
+                navigateToListScreen = navigateToListScreen,
+                handleDatabaseAction = handleDatabaseAction
+            )
         }
+    )
+}
+
+@Composable
+private fun UpdateAction(
+    handleDatabaseAction: (Action) -> Unit,
+    navigateToListScreen: (Action) -> Unit
+) {
+    IconButton(
+        onClick = {
+            handleDatabaseAction(Action.UPDATE)
+            navigateToListScreen(Action.UPDATE)
+        }
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Check,
+            contentDescription = "Add Task",
+            tint = MaterialTheme.colors.onPrimary
+        )
+    }
+}
+
+@Composable
+private fun DeleteAction(
+    onDeleteClicked: () -> Unit
+) {
+    IconButton(
+        onClick = {
+            onDeleteClicked()
+        }
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Delete,
+            contentDescription = "Add Task",
+            tint = MaterialTheme.colors.onPrimary
+        )
+    }
+}
+
+@Composable
+fun ExistTaskAppBarActions(
+    selectedTask: TodoTask,
+    navigateToListScreen: (Action) -> Unit,
+    handleDatabaseAction: (Action) -> Unit
+) {
+    var openDialog by remember {
+        mutableStateOf(false)
+    }
+
+    DisplayAlertDialog(
+        openDialog = openDialog,
+        title = "Remove '${selectedTask.title}'?",
+        message = "Are you sure to Remove '${selectedTask.title}'",
+        confirmText = "Delete Task",
+        cancelText = "Keep it",
+        onDismissRequest = { openDialog = false },
+        onConfirm = {
+            handleDatabaseAction(Action.DELETE)
+            navigateToListScreen(Action.DELETE)
+        }
+    )
+    DeleteAction(
+        onDeleteClicked = {
+            openDialog = true
+        }
+    )
+
+    UpdateAction(
+        handleDatabaseAction = handleDatabaseAction,
+        navigateToListScreen = navigateToListScreen
     )
 }
 

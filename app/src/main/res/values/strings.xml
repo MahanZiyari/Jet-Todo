@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Jet Todo</string>
 
+    <string name="delete_all_tasks">Remove All Tasks?</string>
+    <string name="delete_all_task_confirmation">Are you Sure to remove all Tasks?\n There is no going back after this action.</string>
+    <string name="delete_task">Remove \'%1s%\'?</string>
+    <string name="delete_task_confirmation">Are you Sure to remove \'%1s%\'</string>
     <string name="add_button">Add Fab</string>
     <string name="search_action">Search Action</string>
     <string name="filter_action">Filter Action</string>

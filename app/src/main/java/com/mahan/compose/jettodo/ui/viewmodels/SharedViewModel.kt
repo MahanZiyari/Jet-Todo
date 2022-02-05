@@ -67,6 +67,14 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
 
     fun validateFields(): Boolean = title.value.isNotEmpty() && description.value.isNotEmpty()
 
+    fun isDatabaseEmpty(): Boolean {
+        if (tasks is RequestState.Success<*>) {
+            val listOfTask = tasks.data as List<*>
+            return listOfTask.isEmpty()
+        }
+        return false
+    }
+
 
     fun getAllTasks() {
         _tasks.value = RequestState.Loading
@@ -136,13 +144,19 @@ class SharedViewModel @Inject constructor(private val repository: TodoRepository
         }
     }
 
+    private fun deleteAllTasks() {
+        viewModelScope.launch {
+            repository.deleteAllTasks()
+        }
+    }
+
     fun handleDatabaseActions(action: Action) {
         updateAction(action)
         when (action) {
             Action.ADD -> addTask()
             Action.UPDATE -> updateTask()
             Action.DELETE -> removeTask()
-            Action.DELETE_ALL -> {}
+            Action.DELETE_ALL -> deleteAllTasks()
             Action.UNDO -> addTask()
             else -> {}
         }

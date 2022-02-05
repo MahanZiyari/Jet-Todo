@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,8 @@ fun ListScreen(
 
     val scaffoldState = rememberScaffoldState()
 
+    val context = LocalContext.current
+
     DisplaySnackBar(
         scaffoldState = scaffoldState,
         tittle = sharedViewModel.title.value,
@@ -65,7 +68,8 @@ fun ListScreen(
             ListTopAppBar(
                 sharedViewModel = sharedViewModel,
                 searchAppBarState = searchAppBarState,
-                searchAppBarText = searchText
+                searchAppBarText = searchText,
+                context = context
             )
         },
         floatingActionButton = {
@@ -95,6 +99,8 @@ fun HandleListContent(
         }
     } else {
         if (allTasks is RequestState.Success) {
+            if (allTasks.data.isEmpty())
+                EmptyContent()
             ListContent(tasks = allTasks.data, navigateToTaskScreen = navigateToTaskScreen)
         }
     }
@@ -152,7 +158,7 @@ fun DisplaySnackBar(
         if (action != Action.NO_ACTION)
             scope.launch {
                 val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-                    message = "${action.name}: $tittle",
+                    message = if (action == Action.DELETE_ALL) "All Tasks Removed." else "${action.name}: $tittle",
                     actionLabel = if (action == Action.DELETE) "Undo" else "Ok"
                 )
                 undoDeletedTask(
