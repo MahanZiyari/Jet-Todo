@@ -8,17 +8,12 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.mahan.compose.jettodo.navigation.SetupNavigation
 import com.mahan.compose.jettodo.ui.theme.JetTodoTheme
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalAnimationApi
@@ -42,7 +37,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TodoApp(content: @Composable() ()-> Unit) {
+fun TodoApp(content: @Composable() () -> Unit) {
     JetTodoTheme {
         // A surface container using the 'background' color from the theme
         Surface(color = MaterialTheme.colors.background) {

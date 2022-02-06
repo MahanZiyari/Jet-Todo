@@ -79,8 +79,6 @@ fun PrioritySelection(
             tint = MaterialTheme.colors.onSurface
         )
 
-
-        // DropDownMenu
         DropdownMenu(
             modifier = Modifier
                 .width(with(LocalDensity.current) { parentSize.width.toDp() }),

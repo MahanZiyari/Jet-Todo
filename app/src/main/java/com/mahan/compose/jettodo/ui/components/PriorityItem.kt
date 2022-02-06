@@ -4,42 +4,16 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.ui.theme.LARGE_PADDING
 import com.mahan.compose.jettodo.ui.theme.PRIORITY_INDICATOR_SIZE
-
-@Composable
-fun FilterDropDownMenu(
-    expanded: Boolean,
-    onDismissRequest: (Boolean) -> Unit,
-    onMenuItemClicked: (Priority) -> Unit
-) {
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = { onDismissRequest(false) }
-    ) {
-        Priority.values().reversedArray().filterNot { it == Priority.Medium }.forEach {
-            DropdownMenuItem(
-                onClick = {
-                    onMenuItemClicked(it)
-                    onDismissRequest(false)
-                }
-            ) {
-                PriorityItem(priority = it)
-            }
-        }
-
-    }
-}
-
 
 @Composable
 fun PriorityItem(
@@ -64,4 +38,27 @@ fun PriorityItem(
 @Composable
 fun PriorityItemPreview() {
     PriorityItem(priority = Priority.Low)
+}
+
+@Composable
+fun PriorityIndicator(
+    modifier: Modifier = Modifier,
+    circleSize: Dp,
+    priority: Priority
+) {
+    Canvas(
+        modifier = modifier
+            .size(circleSize)
+    ) {
+        drawCircle(color = priority.color)
+    }
+}
+
+@Preview
+@Composable
+fun PriorityIndicatorPreview() {
+    PriorityIndicator(
+        circleSize = PRIORITY_INDICATOR_SIZE,
+        priority = Priority.Low
+    )
 }

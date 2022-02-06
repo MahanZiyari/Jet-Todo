@@ -68,7 +68,7 @@ class SharedViewModel @Inject constructor(
         priority.value = newValue
     }
 
-    fun updateAction(newValue: Action) {
+    private fun updateAction(newValue: Action) {
         if (action.value.name == newValue.name) return
         action.value = newValue
     }
@@ -178,7 +178,6 @@ class SharedViewModel @Inject constructor(
 
 
     // Data Store
-
 
     fun persistSortState(priority: Priority) {
         viewModelScope.launch {

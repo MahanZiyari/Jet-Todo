@@ -1,7 +1,5 @@
 package com.mahan.compose.jettodo.ui.screens
 
-import android.content.Context
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -46,7 +44,7 @@ fun TaskScreen(
             TaskScreenAppBar(
                 selectedTask = selectedTask,
                 navigateToListScreen = { action ->
-                    when(action) {
+                    when (action) {
                         Action.NO_ACTION -> navigateToListScreen(action)
                         else -> {
                             if (sharedViewModel.validateFields())

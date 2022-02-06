@@ -7,5 +7,4 @@ enum class Action {
     DELETE_ALL,
     UNDO,
     NO_ACTION
-
 }

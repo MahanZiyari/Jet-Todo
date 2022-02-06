@@ -9,9 +9,10 @@ class TodoRepository @Inject constructor(private val todoDao: TodoDao) {
 
     fun getAllTasks() = todoDao.getAllTasks()
 
-    fun getSelectedTask(taskId:Int) = todoDao.getSelectedTask(taskId)
+    fun getSelectedTask(taskId: Int) = todoDao.getSelectedTask(taskId)
 
     fun searchDatabase(searchQuery: String) = todoDao.search(searchQuery)
+
     fun sortByLowPriority() = todoDao.sortByLowPriority()
 
     fun sortByHighPriority() = todoDao.sortByHighPriority()

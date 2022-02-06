@@ -18,7 +18,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,9 +25,9 @@ import com.mahan.compose.jettodo.R
 import com.mahan.compose.jettodo.data.models.Priority
 import com.mahan.compose.jettodo.data.models.TodoTask
 import com.mahan.compose.jettodo.ui.components.ListFab
-import com.mahan.compose.jettodo.ui.components.ListTopAppBar
 import com.mahan.compose.jettodo.ui.components.RedBackground
 import com.mahan.compose.jettodo.ui.components.TaskItem
+import com.mahan.compose.jettodo.ui.components.appbars.ListTopAppBar
 import com.mahan.compose.jettodo.ui.theme.MediumGray
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
@@ -41,7 +40,6 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterialApi
 @Composable
 fun ListScreen(
-    //action: Action,
     navigateToTaskScreen: (Int) -> Unit,
     sharedViewModel: SharedViewModel
 ) {
@@ -61,7 +59,6 @@ fun ListScreen(
 
     val scaffoldState = rememberScaffoldState()
 
-    val context = LocalContext.current
 
     DisplaySnackBar(
         scaffoldState = scaffoldState,
@@ -69,9 +66,6 @@ fun ListScreen(
         action = action,
         onUndoClicked = {
             sharedViewModel.handleDatabaseActions(it)
-        },
-        onComplete = {
-            //sharedViewModel.updateAction(it)
         }
     )
 
@@ -83,7 +77,6 @@ fun ListScreen(
                 sharedViewModel = sharedViewModel,
                 searchAppBarState = searchAppBarState,
                 searchAppBarText = searchText,
-                context = context
             )
         },
         floatingActionButton = {
@@ -99,7 +92,6 @@ fun ListScreen(
             navigateToTaskScreen = navigateToTaskScreen,
             searchAppBarState = searchAppBarState,
             onSwipeToDelete = { action, task ->
-                Log.d("Swipe", "ListScreen: task in OnSwipe: $task")
                 sharedViewModel.updateTaskContentFields(task)
                 sharedViewModel.handleDatabaseActions(action)
             }
@@ -255,7 +247,7 @@ fun DisplaySnackBar(
     tittle: String,
     action: Action,
     onUndoClicked: (Action) -> Unit,
-    onComplete: (Action) -> Unit
+    onComplete: (Action) -> Unit = {}
 ) {
 
     val scope = rememberCoroutineScope()

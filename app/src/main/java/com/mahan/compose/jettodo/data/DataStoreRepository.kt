@@ -22,7 +22,7 @@ class DataStoreRepository @Inject constructor(
     @ApplicationContext context: Context
 ) {
 
-    private object Keys{
+    private object Keys {
         val sortKey = stringPreferencesKey(name = Constants.PREFERENCE_KEY)
     }
 

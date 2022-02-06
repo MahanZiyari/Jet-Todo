@@ -1,8 +1,8 @@
 package com.mahan.compose.jettodo.data.models
 
-import com.mahan.compose.jettodo.util.Constants.TODO_TABLE
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.mahan.compose.jettodo.util.Constants.TODO_TABLE
 
 @Entity(tableName = TODO_TABLE)
 data class TodoTask(

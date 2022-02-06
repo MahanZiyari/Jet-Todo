@@ -1,7 +1,5 @@
 package com.mahan.compose.jettodo.navigation
 
-import java.lang.IllegalArgumentException
-
 enum class Destination {
     ListScreen,
     TaskScreen,
@@ -14,7 +12,7 @@ enum class Destination {
                 TaskScreen.name -> TaskScreen
                 SplashScreen.name -> SplashScreen
                 null -> ListScreen
-                else -> throw IllegalArgumentException("yooho whats up?")
+                else -> throw IllegalArgumentException("Route Not Found")
             }
         }
     }

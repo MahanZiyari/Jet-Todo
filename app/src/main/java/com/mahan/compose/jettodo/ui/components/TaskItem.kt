@@ -105,5 +105,11 @@ fun RedBackground(degree: Float) {
 @Preview
 @Composable
 fun RedBackgroundPreview() {
-    RedBackground(degree = 0f)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+    ) {
+        RedBackground(degree = 0f)
+    }
 }

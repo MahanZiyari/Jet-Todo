@@ -1,6 +1,5 @@
-package com.mahan.compose.jettodo.ui.components
+package com.mahan.compose.jettodo.ui.components.appbars
 
-import android.content.Context
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
@@ -18,6 +17,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.mahan.compose.jettodo.R
 import com.mahan.compose.jettodo.data.models.Priority
+import com.mahan.compose.jettodo.ui.components.DisplayAlertDialog
+import com.mahan.compose.jettodo.ui.components.buttons.DefaultAppBarActions
 import com.mahan.compose.jettodo.ui.theme.TOP_APP_BAR_HEIGHT
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
@@ -28,7 +29,6 @@ fun ListTopAppBar(
     sharedViewModel: SharedViewModel,
     searchAppBarState: SearchAppBarState,
     searchAppBarText: String,
-    context: Context
 ) {
     var openDialog by remember {
         mutableStateOf(false)
@@ -74,9 +74,7 @@ fun ListTopAppBar(
                     else
                         sharedViewModel.searchAppBarState.value = SearchAppBarState.CLOSED
                 },
-                onSearchClicked = {
-                    // sharedViewModel.searchDatabase(it)
-                }
+                onSearchClicked = {}
             )
         }
     }
@@ -102,16 +100,6 @@ fun DefaultListTopAppBar(
     )
 }
 
-@Composable
-fun DefaultAppBarActions(
-    onSearchClicked: () -> Unit,
-    onPriorityItemClicked: (Priority) -> Unit,
-    onDeleteClicked: () -> Unit
-) {
-    SearchAction(onSearchClicked = onSearchClicked)
-    SortAction(onPriorityItemClicked = onPriorityItemClicked)
-    MenuAction(onDeleteClicked = onDeleteClicked)
-}
 
 
 @Composable
@@ -134,7 +122,6 @@ fun SearchTopAppBar(
             value = text,
             onValueChange = {
                 onTextChange(it)
-                // onSearchClicked(it)
             },
             singleLine = true,
             placeholder = {
@@ -180,8 +167,7 @@ fun SearchTopAppBar(
                 imeAction = ImeAction.Search
             ),
             keyboardActions = KeyboardActions(
-                onAny = { onSearchClicked(text) }
-                //onSearch = { onSearchClicked(text) }
+                onSearch = { onSearchClicked(text) }
             )
         )
     }

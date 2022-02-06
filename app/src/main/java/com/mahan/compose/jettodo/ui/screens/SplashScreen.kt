@@ -75,7 +75,8 @@ private fun Splash(offsetState: Dp, alphaState: Float) {
 }
 
 @Composable
-fun getLogo(): Int = if (isSystemInDarkTheme()) R.drawable.ic_logo_dark else R.drawable.ic_logo_light
+fun getLogo(): Int =
+    if (isSystemInDarkTheme()) R.drawable.ic_logo_dark else R.drawable.ic_logo_light
 
 @Preview
 @Composable
@@ -83,7 +84,7 @@ fun SplashScreenPreview() {
     Splash(offsetState = 0.dp, alphaState = 1f)
 }
 
-@Preview (uiMode = UI_MODE_NIGHT_YES)
+@Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SplashScreenPreviewDarkMode() {
     Splash(offsetState = 0.dp, alphaState = 1f)

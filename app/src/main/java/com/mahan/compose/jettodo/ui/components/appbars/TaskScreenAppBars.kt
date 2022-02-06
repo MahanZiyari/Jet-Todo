@@ -7,11 +7,8 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.*
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.room.Delete
-import com.mahan.compose.jettodo.R
 import com.mahan.compose.jettodo.data.models.TodoTask
 import com.mahan.compose.jettodo.ui.components.DisplayAlertDialog
 import com.mahan.compose.jettodo.util.Action
