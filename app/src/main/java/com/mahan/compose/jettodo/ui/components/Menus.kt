@@ -26,31 +26,15 @@ fun FilterDropDownMenu(
         expanded = expanded,
         onDismissRequest = { onDismissRequest(false) }
     ) {
-        DropdownMenuItem(
-            onClick = {
-                onMenuItemClicked(Priority.Low)
-                onDismissRequest(false)
+        Priority.values().reversedArray().filterNot { it == Priority.Medium }.forEach {
+            DropdownMenuItem(
+                onClick = {
+                    onMenuItemClicked(it)
+                    onDismissRequest(false)
+                }
+            ) {
+                PriorityItem(priority = it)
             }
-        ) {
-            PriorityItem(priority = Priority.Low)
-        }
-
-        DropdownMenuItem(
-            onClick = {
-                onMenuItemClicked(Priority.High)
-                onDismissRequest(false)
-            }
-        ) {
-            PriorityItem(priority = Priority.High)
-        }
-
-        DropdownMenuItem(
-            onClick = {
-                onMenuItemClicked(Priority.None)
-                onDismissRequest(false)
-            }
-        ) {
-            PriorityItem(priority = Priority.None)
         }
 
     }

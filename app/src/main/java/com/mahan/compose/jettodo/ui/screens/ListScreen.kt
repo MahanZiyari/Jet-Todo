@@ -70,7 +70,7 @@ fun ListScreen(
             sharedViewModel.handleDatabaseActions(it)
         },
         onComplete = {
-            sharedViewModel.updateAction(it)
+            //sharedViewModel.updateAction(it)
         }
     )
 

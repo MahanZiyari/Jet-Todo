@@ -29,9 +29,25 @@ interface TodoDao {
     @Query("Select * from todo_table Where title Like :searchQuery OR description Like :searchQuery")
     fun search(searchQuery: String): Flow<List<TodoTask>>
 
-    @Query("Select * from todo_table Order By Case When priority Like 'L%' Then 1 When priority Like 'M%' Then 2 When priority Like 'H%' Then 3 End")
+    @Query(
+        """Select * from todo_table Order By 
+                Case 
+                    When priority Like 'L%'Then 1 
+                    When priority Like 'M%' Then 2 
+                    When priority Like 'H%' Then 3 
+                End
+                """
+    )
     fun sortByLowPriority(): Flow<List<TodoTask>>
 
-    @Query("Select * from todo_table Order By Case When priority Like 'H%' Then 1 When priority Like 'M%' Then 2 When priority Like 'L%' Then 3 End")
+    @Query(
+        """Select * from todo_table Order By 
+                Case 
+                    When priority Like 'H%'Then 1 
+                    When priority Like 'M%' Then 2 
+                    When priority Like 'L%' Then 3 
+                End
+                """
+    )
     fun sortByHighPriority(): Flow<List<TodoTask>>
 }
