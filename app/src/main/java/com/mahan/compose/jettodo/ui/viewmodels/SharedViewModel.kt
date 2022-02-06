@@ -33,6 +33,8 @@ class SharedViewModel @Inject constructor(
         mutableStateOf(SearchAppBarState.CLOSED)
     val searchAppBarText: MutableState<String> = mutableStateOf("")
 
+    var deleteCount = mutableStateOf(0)
+
     // Selected Task
     private val _selectedTask: MutableStateFlow<TodoTask?> = MutableStateFlow(null)
     val selectedTask = _selectedTask.asStateFlow()
@@ -64,14 +66,6 @@ class SharedViewModel @Inject constructor(
     }
 
     fun validateFields(): Boolean = title.value.isNotEmpty() && description.value.isNotEmpty()
-
-    fun isDatabaseEmpty(): Boolean {
-        if (tasks is RequestState.Success<*>) {
-            val listOfTask = tasks.data as List<*>
-            return listOfTask.isEmpty()
-        }
-        return false
-    }
 
 
     fun getAllTasks() {
@@ -140,6 +134,7 @@ class SharedViewModel @Inject constructor(
             )
             repository.delete(todoTask)
         }
+        deleteCount.value += 1
     }
 
     private fun deleteAllTasks() {

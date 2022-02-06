@@ -1,5 +1,6 @@
 package com.mahan.compose.jettodo.ui.screens
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -57,6 +58,8 @@ fun ListScreen(
     val searchText: String by sharedViewModel.searchAppBarText
 
     val action by sharedViewModel.action
+    val deleteCount by sharedViewModel.deleteCount
+    Log.d("DeleteCount", "ListScreen: $deleteCount")
 
     val sortState by sharedViewModel.sortState.collectAsState()
     val tasksSortByLowPriority by sharedViewModel.lowPriorityTasks.collectAsState()
@@ -72,7 +75,8 @@ fun ListScreen(
         action = action,
         onUndoClicked = {
             sharedViewModel.handleDatabaseActions(it)
-        }
+        },
+        deleteCount = deleteCount
     )
 
     Scaffold(
@@ -99,6 +103,7 @@ fun ListScreen(
             navigateToTaskScreen = navigateToTaskScreen,
             searchAppBarState = searchAppBarState,
             onSwipeToDelete = { action, task ->
+                Log.d("Swipe", "ListScreen: task in OnSwipe: $task")
                 sharedViewModel.handleDatabaseActions(action)
                 sharedViewModel.updateTaskContentFields(task)
             }
@@ -252,7 +257,8 @@ fun DisplaySnackBar(
     scaffoldState: ScaffoldState,
     tittle: String,
     action: Action,
-    onUndoClicked: (Action) -> Unit
+    onUndoClicked: (Action) -> Unit,
+    deleteCount: Int
 ) {
 
     val scope = rememberCoroutineScope()
@@ -260,6 +266,7 @@ fun DisplaySnackBar(
     LaunchedEffect(key1 = action) {
         if (action != Action.NO_ACTION)
             scope.launch {
+                Log.d("Action", "DisplaySnackBar: $action")
                 val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
                     message = if (action == Action.DELETE_ALL) "All Tasks Removed." else "${action.name}: $tittle",
                     actionLabel = if (action == Action.DELETE) "Undo" else "Ok"

@@ -20,7 +20,8 @@ import com.mahan.compose.jettodo.util.Action
 fun TaskScreenAppBar(
     selectedTask: TodoTask?,
     navigateToListScreen: (Action) -> Unit,
-    handleDatabaseAction: (Action) -> Unit
+    handleDatabaseAction: (Action) -> Unit,
+    updateSelectedTask: (TodoTask) -> Unit
 ) {
     if (selectedTask == null)
         NewTaskAppBar(
@@ -31,14 +32,15 @@ fun TaskScreenAppBar(
         ExistTaskAppBar(
             selectedTask = selectedTask,
             navigateToListScreen = navigateToListScreen,
-            handleDatabaseAction = handleDatabaseAction
+            handleDatabaseAction = handleDatabaseAction,
+            updateSelectedTask = updateSelectedTask
         )
 }
 
 @Composable
 fun NewTaskAppBar(
     navigateToListScreen: (Action) -> Unit,
-    handleDatabaseAction: (Action) -> Unit
+    handleDatabaseAction: (Action) -> Unit,
 ) {
     TopAppBar(
         backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -89,7 +91,8 @@ fun NewTaskAppBarPreview() {
 fun ExistTaskAppBar(
     selectedTask: TodoTask,
     navigateToListScreen: (Action) -> Unit,
-    handleDatabaseAction: (Action) -> Unit
+    handleDatabaseAction: (Action) -> Unit,
+    updateSelectedTask: (TodoTask) -> Unit
 ) {
     TopAppBar(
         backgroundColor = MaterialTheme.colors.primaryVariant,
@@ -119,7 +122,8 @@ fun ExistTaskAppBar(
             ExistTaskAppBarActions(
                 selectedTask = selectedTask,
                 navigateToListScreen = navigateToListScreen,
-                handleDatabaseAction = handleDatabaseAction
+                handleDatabaseAction = handleDatabaseAction,
+                updateSelectedTask = updateSelectedTask
             )
         }
     )
@@ -165,7 +169,8 @@ private fun DeleteAction(
 fun ExistTaskAppBarActions(
     selectedTask: TodoTask,
     navigateToListScreen: (Action) -> Unit,
-    handleDatabaseAction: (Action) -> Unit
+    handleDatabaseAction: (Action) -> Unit,
+    updateSelectedTask: (TodoTask) -> Unit
 ) {
     var openDialog by remember {
         mutableStateOf(false)
@@ -179,6 +184,7 @@ fun ExistTaskAppBarActions(
         cancelText = "Keep it",
         onDismissRequest = { openDialog = false },
         onConfirm = {
+            updateSelectedTask(selectedTask)
             handleDatabaseAction(Action.DELETE)
             navigateToListScreen(Action.DELETE)
         }
@@ -201,6 +207,7 @@ fun ExistTaskAppBarPreview() {
     ExistTaskAppBar(
         selectedTask = TodoTask(),
         navigateToListScreen = {},
-        handleDatabaseAction = {}
+        handleDatabaseAction = {},
+        updateSelectedTask = {}
     )
 }

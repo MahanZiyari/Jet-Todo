@@ -2,6 +2,7 @@ package com.mahan.compose.jettodo.ui.screens
 
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -30,6 +31,11 @@ fun TaskScreen(
     navigateToListScreen: (Action) -> Unit
 ) {
 
+    BackHandler(enabled = true) {
+        sharedViewModel.handleDatabaseActions(Action.NO_ACTION)
+        navigateToListScreen(Action.NO_ACTION)
+    }
+
     val title by sharedViewModel.title
     val description by sharedViewModel.description
     val priority by sharedViewModel.priority
@@ -52,6 +58,9 @@ fun TaskScreen(
                 },
                 handleDatabaseAction = {
                     sharedViewModel.handleDatabaseActions(it)
+                },
+                updateSelectedTask = {
+                    sharedViewModel.updateTaskContentFields(it)
                 }
             )
         },
