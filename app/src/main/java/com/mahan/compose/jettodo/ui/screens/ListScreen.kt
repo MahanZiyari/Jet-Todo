@@ -1,5 +1,6 @@
 package com.mahan.compose.jettodo.ui.screens
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -99,8 +100,8 @@ fun ListScreen(
             searchAppBarState = searchAppBarState,
             onSwipeToDelete = { action, task ->
                 Log.d("Swipe", "ListScreen: task in OnSwipe: $task")
-                sharedViewModel.handleDatabaseActions(action)
                 sharedViewModel.updateTaskContentFields(task)
+                sharedViewModel.handleDatabaseActions(action)
             }
         )
     }
@@ -159,6 +160,7 @@ fun HandleListContent(
 
 }
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @Composable

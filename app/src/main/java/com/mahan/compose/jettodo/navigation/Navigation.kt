@@ -28,14 +28,6 @@ fun SetupNavigation(
     sharedViewModel: SharedViewModel
 ) {
 
-    val backToListScreen: (Action) -> Unit = {
-        navController.popBackStack(
-            route = Destination.ListScreen.name + "/{action}",
-            inclusive = false
-        )
-        // navController.popBackStack()
-    }
-
     val navigateToListScreen: (Action) -> Unit = {
         navController.navigate(route = Destination.ListScreen.name + "/${it.name}") {
             popUpTo(0)
@@ -72,7 +64,6 @@ fun SetupNavigation(
         ) {
 
             ListScreen(
-                // action = action,
                 navigateToTaskScreen = navigateToTaskScreen,
                 sharedViewModel = sharedViewModel
             )
