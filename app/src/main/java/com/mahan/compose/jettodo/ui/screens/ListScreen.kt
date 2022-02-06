@@ -44,11 +44,6 @@ fun ListScreen(
     navigateToTaskScreen: (Int) -> Unit,
     sharedViewModel: SharedViewModel
 ) {
-    LaunchedEffect(key1 = true) {
-        sharedViewModel.getAllTasks()
-        sharedViewModel.readSortState()
-    }
-
 
     val tasks by sharedViewModel.tasks.collectAsState()
     val searchedTasks by sharedViewModel.searchedTasks.collectAsState()
@@ -58,8 +53,6 @@ fun ListScreen(
     val searchText: String by sharedViewModel.searchAppBarText
 
     val action by sharedViewModel.action
-    val deleteCount by sharedViewModel.deleteCount
-    Log.d("DeleteCount", "ListScreen: $deleteCount")
 
     val sortState by sharedViewModel.sortState.collectAsState()
     val tasksSortByLowPriority by sharedViewModel.lowPriorityTasks.collectAsState()
@@ -76,7 +69,9 @@ fun ListScreen(
         onUndoClicked = {
             sharedViewModel.handleDatabaseActions(it)
         },
-        deleteCount = deleteCount
+        onComplete = {
+            sharedViewModel.updateAction(it)
+        }
     )
 
     Scaffold(
@@ -220,7 +215,7 @@ fun ListContent(
                     state = dismissState,
                     directions = setOf(DismissDirection.EndToStart),
                     dismissThresholds = { FractionalThreshold(0.2f) },
-                    background = {RedBackground(degree = degree)},
+                    background = { RedBackground(degree = degree) },
                     dismissContent = {
                         TaskItem(todoTask = it, navigateToTaskScreen = navigateToTaskScreen)
                     }
@@ -258,13 +253,13 @@ fun DisplaySnackBar(
     tittle: String,
     action: Action,
     onUndoClicked: (Action) -> Unit,
-    deleteCount: Int
+    onComplete: (Action) -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = action) {
-        if (action != Action.NO_ACTION)
+        if (action != Action.NO_ACTION) {
             scope.launch {
                 Log.d("Action", "DisplaySnackBar: $action")
                 val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
@@ -277,6 +272,8 @@ fun DisplaySnackBar(
                     onUndoClicked = onUndoClicked
                 )
             }
+            onComplete(Action.NO_ACTION)
+        }
     }
 }
 

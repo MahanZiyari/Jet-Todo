@@ -25,6 +25,9 @@ class SharedViewModel @Inject constructor(
     private val _tasks = MutableStateFlow<RequestState<List<TodoTask>>>(RequestState.Idle)
     val tasks: StateFlow<RequestState<List<TodoTask>>> = _tasks.asStateFlow()
 
+    private val _sortState = MutableStateFlow<RequestState<Priority>>(RequestState.Idle)
+    val sortState = _sortState.asStateFlow()
+
     // Tasks based on user Search
     private val _searchedTasks = MutableStateFlow<RequestState<List<TodoTask>>>(RequestState.Idle)
     val searchedTasks: StateFlow<RequestState<List<TodoTask>>> = _searchedTasks.asStateFlow()
@@ -33,7 +36,6 @@ class SharedViewModel @Inject constructor(
         mutableStateOf(SearchAppBarState.CLOSED)
     val searchAppBarText: MutableState<String> = mutableStateOf("")
 
-    var deleteCount = mutableStateOf(0)
 
     // Selected Task
     private val _selectedTask: MutableStateFlow<TodoTask?> = MutableStateFlow(null)
@@ -46,6 +48,12 @@ class SharedViewModel @Inject constructor(
     val priority = mutableStateOf(Priority.Low)
 
     val action = mutableStateOf(Action.NO_ACTION)
+
+    // Initialization
+    init {
+        getAllTasks()
+        readSortState()
+    }
 
     fun updateTitle(newTitle: String) {
         if (newTitle.length < Constants.MAX_TITLE_CHARACTER_COUNT)
@@ -68,7 +76,7 @@ class SharedViewModel @Inject constructor(
     fun validateFields(): Boolean = title.value.isNotEmpty() && description.value.isNotEmpty()
 
 
-    fun getAllTasks() {
+    private fun getAllTasks() {
         _tasks.value = RequestState.Loading
         viewModelScope.launch {
             repository.getAllTasks().collect {
@@ -134,7 +142,6 @@ class SharedViewModel @Inject constructor(
             )
             repository.delete(todoTask)
         }
-        deleteCount.value += 1
     }
 
     private fun deleteAllTasks() {
@@ -172,8 +179,6 @@ class SharedViewModel @Inject constructor(
 
     // Data Store
 
-    private val _sortState = MutableStateFlow<RequestState<Priority>>(RequestState.Idle)
-    val sortState = _sortState.asStateFlow()
 
     fun persistSortState(priority: Priority) {
         viewModelScope.launch {
@@ -181,7 +186,7 @@ class SharedViewModel @Inject constructor(
         }
     }
 
-    fun readSortState() {
+    private fun readSortState() {
         _sortState.value = RequestState.Loading
         viewModelScope.launch {
             dataStoreRepository.readSortState.collect {
