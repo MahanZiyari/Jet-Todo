@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.mahan.compose.jettodo.ui.screens.ListScreen
+import com.mahan.compose.jettodo.ui.screens.SplashScreen
 import com.mahan.compose.jettodo.ui.screens.TaskScreen
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
@@ -33,7 +34,7 @@ fun SetupNavigation(
 
     val navigateToListScreen: (Action) -> Unit = {
         navController.navigate(route = Destination.ListScreen.name + "/${it.name}") {
-            popUpTo(route = Destination.ListScreen.name + "/${it.name}") {inclusive = true}
+            popUpTo(0)
         }
     }
 
@@ -43,17 +44,20 @@ fun SetupNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = Destination.ListScreen.name + "/{action}"
+        startDestination = Destination.SplashScreen.name
     ) {
+        composable(route = Destination.SplashScreen.name) {
+            SplashScreen {
+                navigateToListScreen(Action.NO_ACTION)
+            }
+        }
+
         // ListScreen
         composable(
             route = Destination.ListScreen.name + "/{action}",
             arguments = listOf(navArgument(name = "action") { type = NavType.StringType })
         ) {
-            val action = it.arguments?.getString("action").toPriority()
-            /*LaunchedEffect(key1 = action) {
-                sharedViewModel.updateAction(action)
-            }*/
+
             ListScreen(
                 // action = action,
                 navigateToTaskScreen = navigateToTaskScreen,
@@ -81,7 +85,7 @@ fun SetupNavigation(
 
             TaskScreen(
                 selectedTask = selectedTask,
-                navigateToListScreen = backToListScreen,
+                navigateToListScreen = navigateToListScreen,
                 sharedViewModel = sharedViewModel
             )
         }

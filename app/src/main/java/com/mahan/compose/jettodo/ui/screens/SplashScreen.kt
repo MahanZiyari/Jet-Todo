@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.mahan.compose.jettodo.R
 import com.mahan.compose.jettodo.ui.theme.splashScreenColor
@@ -51,11 +52,15 @@ fun SplashScreen(
     }
 
 
+    Splash(offsetState, alphaState)
+}
+
+@Composable
+private fun Splash(offsetState: Dp, alphaState: Float) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.splashScreenColor)
-        ,
+            .background(MaterialTheme.colors.splashScreenColor),
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -75,11 +80,11 @@ fun getLogo(): Int = if (isSystemInDarkTheme()) R.drawable.ic_logo_dark else R.d
 @Preview
 @Composable
 fun SplashScreenPreview() {
-    SplashScreen(navigateToListScreen = {})
+    Splash(offsetState = 0.dp, alphaState = 1f)
 }
 
 @Preview (uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun SplashScreenPreviewDarkMode() {
-    SplashScreen(navigateToListScreen = {})
+    Splash(offsetState = 0.dp, alphaState = 1f)
 }
