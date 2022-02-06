@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.mahan.compose.jettodo.navigation.SetupNavigation
 import com.mahan.compose.jettodo.ui.theme.JetTodoTheme
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TodoApp {
-                navController = rememberNavController()
+                navController = rememberAnimatedNavController()
                 SetupNavigation(
                     navController = navController,
                     sharedViewModel = sharedViewModel

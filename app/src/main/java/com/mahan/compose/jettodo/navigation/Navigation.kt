@@ -1,7 +1,9 @@
 package com.mahan.compose.jettodo.navigation
 
 
-import androidx.compose.animation.ExperimentalAnimationApi
+import android.transition.Transition
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -9,15 +11,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
 import com.mahan.compose.jettodo.ui.screens.ListScreen
 import com.mahan.compose.jettodo.ui.screens.SplashScreen
 import com.mahan.compose.jettodo.ui.screens.TaskScreen
 import com.mahan.compose.jettodo.ui.viewmodels.SharedViewModel
 import com.mahan.compose.jettodo.util.Action
-import com.mahan.compose.jettodo.util.toPriority
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
@@ -28,7 +29,10 @@ fun SetupNavigation(
 ) {
 
     val backToListScreen: (Action) -> Unit = {
-        navController.popBackStack(route = Destination.ListScreen.name + "/{action}", inclusive = false)
+        navController.popBackStack(
+            route = Destination.ListScreen.name + "/{action}",
+            inclusive = false
+        )
         // navController.popBackStack()
     }
 
@@ -38,15 +42,24 @@ fun SetupNavigation(
         }
     }
 
-    val navigateToTaskScreen: (Int) ->Unit = {
+    val navigateToTaskScreen: (Int) -> Unit = {
         navController.navigate(route = Destination.TaskScreen.name + "/$it")
     }
 
-    NavHost(
+    AnimatedNavHost(
         navController = navController,
         startDestination = Destination.SplashScreen.name
     ) {
-        composable(route = Destination.SplashScreen.name) {
+        composable(
+            route = Destination.SplashScreen.name,
+            exitTransition = {
+                slideOutVertically(
+                    animationSpec = tween(
+                        durationMillis = 2000
+                    )
+                )
+            }
+        ) {
             SplashScreen {
                 navigateToListScreen(Action.NO_ACTION)
             }
@@ -68,7 +81,19 @@ fun SetupNavigation(
         // TaskScreen
         composable(
             route = Destination.TaskScreen.name + "/{taskId}",
-            arguments = listOf(navArgument(name = "taskId") { type = NavType.IntType })
+            arguments = listOf(navArgument(name = "taskId") { type = NavType.IntType }),
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(500),
+                    initialOffsetX = { it }
+                )
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(1000)
+                )
+            }
         ) {
             val taskId = it.arguments!!.getInt("taskId")
             LaunchedEffect(key1 = taskId) {
